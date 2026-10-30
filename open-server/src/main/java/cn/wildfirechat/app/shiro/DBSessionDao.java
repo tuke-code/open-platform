@@ -81,7 +81,12 @@ public class DBSessionDao implements SessionDAO {
 
     @Override
     public void delete(Session session) {
+        if (session == null || session.getId() == null) {
+            return;
+        }
         sessionMap.remove(session.getId());
+        // 只删内存 map 不会让 authToken 失效，必须同时删库里的 session
+        shiroSessionRepository.deleteById((String) session.getId());
     }
 
     @Override
